@@ -1,6 +1,7 @@
 package rc6
 
 import (
+	"crypto/cipher"
 	"encoding/binary"
 )
 
@@ -18,7 +19,7 @@ type Rc6Cipher struct {
 	keySched []uint32
 }
 
-func NewCipher(key []byte) Rc6Cipher {
+func NewCipher(key []byte) (cipher.Block, error) {
 	var c Rc6Cipher
 	for len(key)%4 != 0 {
 		key = append(key, 0)
@@ -53,7 +54,7 @@ func NewCipher(key []byte) Rc6Cipher {
 		i = (i + 1) % (2*c.rounds + 4)
 		j = (j + 1) % uint32(c.keyLen)
 	}
-	return c
+	return c, nil
 }
 
 func (Rc6Cipher) BlockSize() int {
